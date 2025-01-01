@@ -1,0 +1,9 @@
+[package]
+name = "shining-piano"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bevy = "0.15.0"
+bevy-midi-graph = { path = "../bevy-midi-graph" }
+
