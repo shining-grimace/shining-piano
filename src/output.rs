@@ -1,10 +1,11 @@
-use crate::{KeyEvent, KeyboardRegister};
+use crate::{KeyEvent, KeyboardRegister, StartProgramEvent};
 use bevy::prelude::*;
 use bevy_midi_graph::{
-    config::{Config, FontSource, RangeSource, SoundSource},
+    config::{Config, SoundSource},
     MidiGraphAudioContext,
 };
 
+const PROGRAM_NO: usize = 0;
 const NODE_ID_LOWER: u64 = 0;
 const NODE_ID_UPPER: u64 = 1;
 
@@ -13,45 +14,19 @@ pub struct OutputPlugin;
 impl Plugin for OutputPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, configure_audio)
-            .add_systems(Update, play_key_events);
+            .add_systems(Update, play_key_events)
+            .add_systems(PostUpdate, change_program);
     }
 }
 
 fn configure_audio(mut audio_context: ResMut<MidiGraphAudioContext>) {
     let config = Config {
-        root: SoundSource::Combiner {
-            node_id: None,
-            sources: vec![
-                SoundSource::event_receiver(
-                    Some(NODE_ID_LOWER),
-                    SoundSource::Font {
-                        node_id: None,
-                        config: FontSource::Ranges(vec![RangeSource {
-                            source: SoundSource::stock_envelope(SoundSource::SquareWave {
-                                node_id: None,
-                                amplitude: 0.125,
-                                duty_cycle: 0.25,
-                            }),
-                            lower: 0,
-                            upper: 127,
-                        }]),
-                    },
-                ),
-                SoundSource::event_receiver(
-                    Some(NODE_ID_UPPER),
-                    SoundSource::Font {
-                        node_id: None,
-                        config: FontSource::Ranges(vec![RangeSource {
-                            source: SoundSource::stock_triangle_wave(),
-                            lower: 0,
-                            upper: 127,
-                        }]),
-                    },
-                ),
-            ],
-        },
+        root: SoundSource::stock_square_wave(),
     };
-    audio_context.swap_graph(&config).unwrap();
+    audio_context
+        .store_new_program(PROGRAM_NO, &config)
+        .unwrap();
+    audio_context.change_program(PROGRAM_NO).unwrap();
 }
 
 fn play_key_events(
@@ -68,9 +43,20 @@ fn play_key_events(
         };
         let event_channel = audio_context
             .event_channel(node_id)
+            .unwrap()
             .expect("No event channel found");
         event_channel
             .send(event.event.clone())
             .expect("INTERNAL: Send failure");
+    }
+}
+
+fn change_program(
+    mut events: EventReader<StartProgramEvent>,
+    mut audio_context: ResMut<MidiGraphAudioContext>,
+) {
+    for event in events.read() {
+        audio_context.change_program(event.program_no).unwrap();
+        println!("DID CHANGE PROGRAM: {}", event.program_no);
     }
 }

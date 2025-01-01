@@ -1,6 +1,6 @@
 use crate::{
     utils::{make_note, on_lower},
-    KeyEvent, KeyboardRegister, Settings,
+    KeyEvent, KeyboardRegister, Settings, StartProgramEvent,
 };
 use bevy::prelude::*;
 use bevy_midi_graph::midi::{NodeEvent, NoteEvent};
@@ -16,12 +16,13 @@ impl Plugin for InputPlugin {
 fn post_input_events(
     inputs: Res<ButtonInput<KeyCode>>,
     settings: Res<Settings>,
-    mut events: EventWriter<KeyEvent>,
+    mut note_events: EventWriter<KeyEvent>,
+    mut program_events: EventWriter<StartProgramEvent>,
     mut quit_signal: EventWriter<AppExit>,
 ) {
     for key in inputs.get_just_pressed() {
         if let Some((register, note)) = note_from_key_code(key, &settings) {
-            events.send(KeyEvent {
+            note_events.send(KeyEvent {
                 register,
                 event: NodeEvent::Note {
                     note,
@@ -29,10 +30,13 @@ fn post_input_events(
                 },
             });
         }
+        if let Some(program_no) = program_no_from_key_code(key) {
+            program_events.send(StartProgramEvent { program_no });
+        }
     }
     for key in inputs.get_just_released() {
         if let Some((register, note)) = note_from_key_code(key, &settings) {
-            events.send(KeyEvent {
+            note_events.send(KeyEvent {
                 register,
                 event: NodeEvent::Note {
                     note,
@@ -92,6 +96,24 @@ fn note_from_key_code(key: &KeyCode, settings: &Settings) -> Option<(KeyboardReg
         KeyCode::BracketLeft => on_lower(false, make_note(note_on_z, 16, false)),
         KeyCode::Equal => on_lower(false, make_note(note_on_z, 16, true)),
         KeyCode::BracketRight => on_lower(false, make_note(note_on_z, 16, false)),
+        _ => None,
+    }
+}
+
+fn program_no_from_key_code(key: &KeyCode) -> Option<usize> {
+    match key {
+        KeyCode::F1 => Some(1),
+        KeyCode::F2 => Some(2),
+        KeyCode::F3 => Some(3),
+        KeyCode::F4 => Some(4),
+        KeyCode::F5 => Some(5),
+        KeyCode::F6 => Some(6),
+        KeyCode::F7 => Some(7),
+        KeyCode::F8 => Some(8),
+        KeyCode::F9 => Some(9),
+        KeyCode::F10 => Some(10),
+        KeyCode::F11 => Some(11),
+        KeyCode::F12 => Some(12),
         _ => None,
     }
 }

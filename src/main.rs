@@ -1,10 +1,16 @@
 use bevy::prelude::*;
 use bevy_midi_graph::{midi::NodeEvent, MidiGraphPlugin};
 
+mod assets;
 mod graphics;
 mod input;
 mod output;
 mod utils;
+
+#[derive(Event, Deref, DerefMut, Debug)]
+pub struct StartProgramEvent {
+    pub program_no: usize,
+}
 
 #[derive(Event, Deref, DerefMut, Debug)]
 pub struct KeyEvent {
@@ -36,6 +42,7 @@ impl Default for Settings {
 
 fn main() {
     App::new()
+        .add_event::<StartProgramEvent>()
         .add_event::<KeyEvent>()
         .insert_resource(Settings::default())
         .add_plugins((
@@ -44,6 +51,7 @@ fn main() {
             graphics::GraphicsPlugin,
             input::InputPlugin,
             output::OutputPlugin,
+            assets::AssetsPlugin,
         ))
         .run();
 }

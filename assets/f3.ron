@@ -1,0 +1,20 @@
+(
+    root: Combiner(
+        sources: [
+            EventReceiver(
+                node_id: Some(0),
+                source: LfsrNoise(
+                    amplitude: 0.125,
+                    inside_feedback: true
+                )
+            ),
+            EventReceiver(
+                node_id: Some(1),
+                source: LfsrNoise(
+                    amplitude: 0.125,
+                    inside_feedback: false
+                )
+            )
+        ]
+    )
+)
