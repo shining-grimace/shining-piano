@@ -4,13 +4,13 @@
             EventReceiver(
                 node_id: Some(0),
                 source: TriangleWave(
-                    amplitude: 0.5
+                    amplitude: 1.0
                 )
             ),
             EventReceiver(
                 node_id: Some(1),
                 source: SawtoothWave(
-                    amplitude: 0.25
+                    amplitude: 0.125
                 )
             )
         ]

@@ -1,6 +1,6 @@
 use crate::{
     utils::{make_note, note_is_black},
-    KeyEvent, Settings,
+    KeyEvent, KeyboardRegister, Settings,
 };
 use bevy::prelude::*;
 use bevy_midi_graph::midi::{NodeEvent, NoteEvent};
@@ -21,6 +21,7 @@ const KEY_DEPRESSION: f32 = 0.05;
 #[derive(Component)]
 struct KeyWithNote {
     note: u8,
+    register: KeyboardRegister,
 }
 
 #[derive(Resource, Default)]
@@ -75,6 +76,7 @@ fn create_piano(
     let base_depth = KEY_DEPTH + ROW_OFFSET + 2.0 * BASE_MARGIN;
     new_cube(
         255,
+        KeyboardRegister::Lower,
         &mut commands,
         materials.plastic.clone(),
         &mut mesh_assets,
@@ -88,6 +90,7 @@ fn create_piano(
         let note = make_note(settings.note_on_z, i, false).expect("Failed getting white note");
         new_cube(
             note,
+            KeyboardRegister::Lower,
             &mut commands,
             materials.ivory.clone(),
             &mut mesh_assets,
@@ -97,6 +100,7 @@ fn create_piano(
         if let Some(note) = make_note(settings.note_on_z, i, true) {
             new_cube(
                 note,
+                KeyboardRegister::Lower,
                 &mut commands,
                 materials.ebony.clone(),
                 &mut mesh_assets,
@@ -115,6 +119,7 @@ fn create_piano(
         let note = make_note(settings.note_on_q, i, false).expect("Failed getting white note");
         new_cube(
             note,
+            KeyboardRegister::Upper,
             &mut commands,
             materials.ivory.clone(),
             &mut mesh_assets,
@@ -128,6 +133,7 @@ fn create_piano(
         if let Some(note) = make_note(settings.note_on_q, i, true) {
             new_cube(
                 note,
+                KeyboardRegister::Upper,
                 &mut commands,
                 materials.ebony.clone(),
                 &mut mesh_assets,
@@ -144,6 +150,7 @@ fn create_piano(
 
 fn new_cube(
     note: u8,
+    register: KeyboardRegister,
     commands: &mut Commands,
     material: Handle<StandardMaterial>,
     mesh_assets: &mut ResMut<Assets<Mesh>>,
@@ -151,7 +158,7 @@ fn new_cube(
     size: Vec3,
 ) {
     commands.spawn((
-        KeyWithNote { note },
+        KeyWithNote { note, register },
         Mesh3d(mesh_assets.add(Cuboid::from_size(size))),
         MeshMaterial3d(material),
         Transform::from_translation(position),
@@ -181,8 +188,9 @@ fn highlight_key_events(
             NoteEvent::NoteOn { .. } => true,
             NoteEvent::NoteOff { .. } => false,
         };
-        if let Some((_, mut material, mut transform)) =
-            key_query.iter_mut().find(|k| k.0.note == note)
+        if let Some((_, mut material, mut transform)) = key_query
+            .iter_mut()
+            .find(|k| k.0.note == note && k.0.register == event.register)
         {
             if is_note_on {
                 material.0 = materials.illuminated.clone();

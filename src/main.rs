@@ -19,7 +19,7 @@ pub struct KeyEvent {
     pub event: NodeEvent,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum KeyboardRegister {
     Lower,
     Upper,
