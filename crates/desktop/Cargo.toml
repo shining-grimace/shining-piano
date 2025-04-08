@@ -1,0 +1,10 @@
+[package]
+name = "shining-piano"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+shining-piano-core = { path = "../core" }
+bevy = { workspace = true }
+bevy-midi-graph = { workspace = true }
+

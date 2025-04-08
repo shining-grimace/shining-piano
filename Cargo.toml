@@ -1,8 +1,19 @@
-[package]
-name = "shining-piano"
-version = "0.1.0"
-edition = "2021"
+[workspace]
+members = [
+    "crates/core",
+    "crates/desktop",
+    "crates/web"
+]
+default-members = ["crates/desktop"]
+resolver = "2"
 
-[dependencies]
-bevy = "0.15.0"
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[workspace.dependencies]
+bevy = "0.15.3"
 bevy-midi-graph = { git = "https://github.com/grimace87/bevy-midi-graph.git", rev = "46e6a9393699652d558a3362d54b9892e360f489" }
+

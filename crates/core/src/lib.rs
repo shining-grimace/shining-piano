@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy_midi_graph::{midi::NodeEvent, MidiGraphPlugin};
+use bevy_midi_graph::{MidiGraphPlugin, midi::NodeEvent};
 
 mod assets;
 mod graphics;
@@ -40,18 +40,19 @@ impl Default for Settings {
     }
 }
 
-fn main() {
-    App::new()
-        .add_event::<StartProgramEvent>()
-        .add_event::<KeyEvent>()
-        .insert_resource(Settings::default())
-        .add_plugins((
-            DefaultPlugins,
-            MidiGraphPlugin,
-            graphics::GraphicsPlugin,
-            input::InputPlugin,
-            output::OutputPlugin,
-            assets::AssetsPlugin,
-        ))
-        .run();
+pub struct ShiningPianoPlugin;
+
+impl Plugin for ShiningPianoPlugin {
+    fn build(&self, app: &mut App) {
+        app.add_event::<StartProgramEvent>()
+            .add_event::<KeyEvent>()
+            .insert_resource(Settings::default())
+            .add_plugins((
+                MidiGraphPlugin,
+                graphics::GraphicsPlugin,
+                input::InputPlugin,
+                output::OutputPlugin,
+                assets::AssetsPlugin,
+            ));
+    }
 }
