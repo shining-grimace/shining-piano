@@ -13,8 +13,7 @@ pub fn run_app() {
                 }),
                 ..default()
             }),
-            ShiningPianoPlugin
+            ShiningPianoPlugin,
         ))
         .run();
 }
-
