@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    body {
+      background-color: #e0e0e0;
+    }
+
+    canvas {
+      background-color: white;
+    }
+  </style>
+  <title>Shining Piano</title>
+</head>
+
+<body>
+  <canvas id="bevy-app"></canvas>
+  <script type="module">
+    import init, { run_app } from './target/bindings.js';
+    let result = await init();
+    run_app();
+  </script>
+</body>
+
+</html>

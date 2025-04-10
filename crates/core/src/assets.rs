@@ -1,6 +1,9 @@
 use crate::StartProgramEvent;
 use bevy::{asset::LoadState, prelude::*};
-use bevy_midi_graph::{MidiGraphAsset, MidiGraphAudioContext};
+use bevy_midi_graph::{
+    GraphAssetLoader, LoopFileSource, MidiFileSource, MidiGraph, MidiGraphAudioContext,
+    OneShotFileSource, Sf2FileSource,
+};
 
 const DEFAULT_PROGRAM: usize = 1;
 
@@ -16,7 +19,7 @@ impl Plugin for AssetsPlugin {
 
 #[derive(Resource, Default)]
 pub struct ProgramAssets {
-    pub programs: Vec<(LoadState, usize, Handle<MidiGraphAsset>)>,
+    pub programs: Vec<(LoadState, usize, Handle<MidiGraph>)>,
 }
 
 fn init_program_assets(server: Res<AssetServer>, mut program_data: ResMut<ProgramAssets>) {
@@ -33,7 +36,11 @@ fn init_program_assets(server: Res<AssetServer>, mut program_data: ResMut<Progra
 
 fn check_graph_assets_ready(
     server: Res<AssetServer>,
-    graph_assets: Res<Assets<MidiGraphAsset>>,
+    graph_assets: Res<Assets<MidiGraph>>,
+    midi_assets: Res<Assets<MidiFileSource>>,
+    sf2_assets: Res<Assets<Sf2FileSource>>,
+    loop_assets: Res<Assets<LoopFileSource>>,
+    one_shot_assets: Res<Assets<OneShotFileSource>>,
     mut program_data: ResMut<ProgramAssets>,
     mut audio_context: ResMut<MidiGraphAudioContext>,
     mut events: EventWriter<StartProgramEvent>,
@@ -59,9 +66,17 @@ fn check_graph_assets_ready(
                     return;
                 }
                 asset.0 = LoadState::Loaded;
+
+                let loader = GraphAssetLoader::new(
+                    &server,
+                    &midi_assets,
+                    &sf2_assets,
+                    &loop_assets,
+                    &one_shot_assets,
+                );
                 let graph = graph_assets.get(&asset.2).unwrap();
                 audio_context
-                    .store_new_program(asset.1, &graph.config)
+                    .store_new_program(asset.1, &graph.config, &loader)
                     .unwrap();
                 println!("DID STORE PROGRAM: {}", asset.1);
             }

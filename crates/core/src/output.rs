@@ -2,7 +2,8 @@ use crate::{KeyEvent, KeyboardRegister, StartProgramEvent};
 use bevy::prelude::*;
 use bevy_midi_graph::{
     config::{Config, SoundSource},
-    MidiGraphAudioContext,
+    GraphAssetLoader, LoopFileSource, MidiFileSource, MidiGraphAudioContext,
+    OneShotFileSource, Sf2FileSource,
 };
 
 const PROGRAM_NO: usize = 0;
@@ -19,12 +20,26 @@ impl Plugin for OutputPlugin {
     }
 }
 
-fn configure_audio(mut audio_context: ResMut<MidiGraphAudioContext>) {
+fn configure_audio(
+    mut audio_context: ResMut<MidiGraphAudioContext>,
+    server: Res<AssetServer>,
+    midi_assets: Res<Assets<MidiFileSource>>,
+    sf2_assets: Res<Assets<Sf2FileSource>>,
+    loop_assets: Res<Assets<LoopFileSource>>,
+    one_shot_assets: Res<Assets<OneShotFileSource>>,
+) {
     let config = Config {
         root: SoundSource::stock_square_wave(),
     };
+    let loader = GraphAssetLoader::new(
+        &server,
+        &midi_assets,
+        &sf2_assets,
+        &loop_assets,
+        &one_shot_assets,
+    );
     audio_context
-        .store_new_program(PROGRAM_NO, &config)
+        .store_new_program(PROGRAM_NO, &config, &loader)
         .unwrap();
     audio_context.change_program(PROGRAM_NO).unwrap();
 }
