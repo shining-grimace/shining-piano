@@ -17,10 +17,15 @@
 
 <body>
   <canvas id="bevy-app"></canvas>
+  <button id="run-button">Run</button>
   <script type="module">
     import init, { run_app } from './target/bindings.js';
-    let result = await init();
-    run_app();
+    const wasmLoad = init();
+    const button = document.getElementById('run-button');
+    button.onclick = async () => {
+      await wasmLoad;
+      run_app();
+    };
   </script>
 </body>
 
