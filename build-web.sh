@@ -1,18 +1,21 @@
 #! /bin/bash
 
+CARGO_PROFILE="wasm-release"
+
 # Prerequisites
 rustup target add wasm32-unknown-unknown
 cargo install wasm-bindgen-cli
 cargo install basic-http-server
 
 # Build WASM binary
-cargo build --release \
+cargo build \
+    --profile "$CARGO_PROFILE" \
     -p shining-piano-web \
     --target wasm32-unknown-unknown
 
 # Move WASM binary to the web app directory
 cp \
-    target/wasm32-unknown-unknown/release/shining_piano_web.wasm \
+    "target/wasm32-unknown-unknown/$CARGO_PROFILE/shining_piano_web.wasm" \
     wasm-demo/target/
 
 # Generate JS bindings for the WASM binary
