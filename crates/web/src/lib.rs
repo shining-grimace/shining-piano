@@ -8,7 +8,7 @@ pub fn run_app() {
         .add_plugins((
             DefaultPlugins.set(WindowPlugin {
                 primary_window: Some(Window {
-                    canvas: Some("#bevy-app".into()),
+                    canvas: Some("#app-canvas".into()),
                     ..default()
                 }),
                 ..default()

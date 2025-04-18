@@ -22,7 +22,7 @@ cp \
 wasm-bindgen --out-name bindings \
     --out-dir wasm-demo/target \
     --target web \
-    target/wasm32-unknown-unknown/release/shining_piano_web.wasm
+    "target/wasm32-unknown-unknown/$CARGO_PROFILE/shining_piano_web.wasm"
 
 # Copy assets into the web app directory
 rm -rf wasm-demo/assets
