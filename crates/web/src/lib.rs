@@ -1,10 +1,17 @@
-use bevy::{asset::AssetMetaCheck, prelude::*};
+use bevy::{asset::AssetMetaCheck, log::LogPlugin, prelude::*};
 use shining_piano_core::ShiningPianoPlugin;
 use std::sync::atomic::{AtomicBool, Ordering};
 use wasm_bindgen::prelude::*;
 
 static EXIT_REQUESTED: AtomicBool = AtomicBool::new(false);
 
+/// Start running the Bevy app.
+/// Plugin configuration is specific to WASM to avoid issues:
+/// - WindowPlugin configured to use the existing canvas rather than
+///   creating a new one
+/// - AssetPlugin configured to not check for meta files that never exist
+/// - LogPlugin disabled so it doesn't try to attach to the process
+///   multiple times (which ponics)
 #[wasm_bindgen]
 pub fn run_app() {
     EXIT_REQUESTED.store(false, Ordering::SeqCst);
@@ -22,7 +29,10 @@ pub fn run_app() {
                 .set(AssetPlugin {
                     meta_check: AssetMetaCheck::Never,
                     ..default()
-                }),
+                })
+                .build()
+                .disable::<LogPlugin>()
+            ,
             ShiningPianoPlugin,
         ))
         .add_systems(Update, check_game_exit)
