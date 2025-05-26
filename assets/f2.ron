@@ -1,17 +1,13 @@
 (
     root: Combiner(
         sources: [
-            EventReceiver(
+            TriangleWave(
                 node_id: Some(0),
-                source: TriangleWave(
-                    amplitude: 1.0
-                )
+                amplitude: 1.0
             ),
-            EventReceiver(
+            SawtoothWave(
                 node_id: Some(1),
-                source: SawtoothWave(
-                    amplitude: 0.125
-                )
+                amplitude: 0.125
             )
         ]
     )

@@ -1,14 +1,12 @@
-use crate::{KeyEvent, KeyboardRegister, StartProgramEvent};
+use crate::{KeyEvent, StartProgramEvent};
 use bevy::prelude::*;
 use bevy_midi_graph::{
+    GraphAssetLoader, LoopFileSource, MidiFileSource, MidiGraphAudioContext, OneShotFileSource,
+    Sf2FileSource,
     config::{Config, SoundSource},
-    GraphAssetLoader, LoopFileSource, MidiFileSource, MidiGraphAudioContext,
-    OneShotFileSource, Sf2FileSource,
 };
 
 const PROGRAM_NO: usize = 0;
-const NODE_ID_LOWER: u64 = 0;
-const NODE_ID_UPPER: u64 = 1;
 
 pub struct OutputPlugin;
 
@@ -47,23 +45,15 @@ fn configure_audio(
 fn play_key_events(
     mut events: EventReader<KeyEvent>,
     mut audio_context: ResMut<MidiGraphAudioContext>,
-) {
+) -> Result<(), BevyError> {
     if events.is_empty() {
-        return;
+        return Ok(());
     }
     for event in events.read() {
-        let node_id = match event.register {
-            KeyboardRegister::Lower => NODE_ID_LOWER,
-            KeyboardRegister::Upper => NODE_ID_UPPER,
-        };
-        let event_channel = audio_context
-            .event_channel(node_id)
-            .unwrap()
-            .expect("No event channel found");
-        event_channel
-            .send(event.event.clone())
-            .expect("INTERNAL: Send failure");
+        let event_channel = audio_context.get_event_sender();
+        event_channel.send(event.message.clone())?;
     }
+    Ok(())
 }
 
 fn change_program(

@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy_midi_graph::{MidiGraphPlugin, midi::NodeEvent};
+use bevy_midi_graph::{MidiGraphPlugin, midi::Message};
 
 mod assets;
 mod graphics;
@@ -16,7 +16,7 @@ pub struct StartProgramEvent {
 pub struct KeyEvent {
     pub register: KeyboardRegister,
     #[deref]
-    pub event: NodeEvent,
+    pub message: Message,
 }
 
 #[derive(Debug, PartialEq, Eq)]

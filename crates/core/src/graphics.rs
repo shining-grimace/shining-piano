@@ -1,9 +1,9 @@
 use crate::{
-    utils::{make_note, note_is_black},
     KeyEvent, KeyboardRegister, Settings,
+    utils::{make_note, note_is_black},
 };
 use bevy::prelude::*;
-use bevy_midi_graph::midi::{NodeEvent, NoteEvent};
+use bevy_midi_graph::midi::{Event, Message};
 
 pub struct GraphicsPlugin;
 
@@ -37,6 +37,7 @@ impl Plugin for GraphicsPlugin {
         app.insert_resource(AmbientLight {
             color: Color::WHITE,
             brightness: 1000.0,
+            ..default()
         })
         .insert_resource(PianoMaterials::default())
         .add_systems(Startup, create_piano)
@@ -175,18 +176,18 @@ fn highlight_key_events(
     )>,
 ) {
     for event in events.read() {
-        let (note, note_event) = match event.event {
-            NodeEvent::Note {
-                note,
-                event: note_event,
-            } => (note, note_event),
+        let (note, is_note_on) = match event.message {
+            Message {
+                data: Event::NoteOn { note, .. },
+                ..
+            } => (note, true),
+            Message {
+                data: Event::NoteOff { note, .. },
+                ..
+            } => (note, false),
             _ => {
                 continue;
             }
-        };
-        let is_note_on = match note_event {
-            NoteEvent::NoteOn { .. } => true,
-            NoteEvent::NoteOff { .. } => false,
         };
         if let Some((_, mut material, mut transform)) = key_query
             .iter_mut()

@@ -1,9 +1,12 @@
 use crate::{
-    utils::{make_note, on_lower},
     KeyEvent, KeyboardRegister, Settings, StartProgramEvent,
+    utils::{make_note, on_lower},
 };
 use bevy::prelude::*;
-use bevy_midi_graph::midi::{NodeEvent, NoteEvent};
+use bevy_midi_graph::midi::{Event, EventTarget, Message};
+
+const NODE_ID_LOWER: u64 = 0;
+const NODE_ID_UPPER: u64 = 1;
 
 pub struct InputPlugin;
 
@@ -22,31 +25,35 @@ fn post_input_events(
 ) {
     for key in inputs.get_just_pressed() {
         if let Some((register, note)) = note_from_key_code(key, &settings) {
-            note_events.send(KeyEvent {
+            let node_id = match register {
+                KeyboardRegister::Lower => NODE_ID_LOWER,
+                KeyboardRegister::Upper => NODE_ID_UPPER
+            };
+            note_events.write(KeyEvent {
                 register,
-                event: NodeEvent::Note {
-                    note,
-                    event: NoteEvent::NoteOn { vel: 1.0 },
+                message: Message {
+                    target: EventTarget::SpecificNode(node_id),
+                    data: Event::NoteOn { note, vel: 1.0 },
                 },
             });
         }
         if let Some(program_no) = program_no_from_key_code(key) {
-            program_events.send(StartProgramEvent { program_no });
+            program_events.write(StartProgramEvent { program_no });
         }
     }
     for key in inputs.get_just_released() {
         if let Some((register, note)) = note_from_key_code(key, &settings) {
-            note_events.send(KeyEvent {
+            note_events.write(KeyEvent {
                 register,
-                event: NodeEvent::Note {
-                    note,
-                    event: NoteEvent::NoteOff { vel: 1.0 },
+                message: Message {
+                    target: EventTarget::Broadcast,
+                    data: Event::NoteOff { note, vel: 1.0 },
                 },
             });
         }
     }
     if inputs.just_pressed(KeyCode::Escape) {
-        quit_signal.send(AppExit::Success);
+        quit_signal.write(AppExit::Success);
     }
 }
 

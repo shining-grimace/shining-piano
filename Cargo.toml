@@ -23,6 +23,6 @@ opt-level = "z"
 strip = "debuginfo"
 
 [workspace.dependencies]
-bevy = "0.15.3"
-bevy-midi-graph = { git = "https://github.com/grimace87/bevy-midi-graph.git", rev = "1d79dc3343ac6ff2aa6b1c558b61d91ea60e46e0" }
+bevy = { version = "0.16.0", features = ["dynamic_linking"] }
+bevy-midi-graph = { git = "https://github.com/grimace87/bevy-midi-graph.git", rev = "a52fcdcdb61fb8a64b0a7cf709f3bcfc29805d46" }
 

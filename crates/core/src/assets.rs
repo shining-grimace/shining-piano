@@ -84,7 +84,7 @@ fn check_graph_assets_ready(
     }
 
     *completed = true;
-    events.send(StartProgramEvent {
+    events.write(StartProgramEvent {
         program_no: DEFAULT_PROGRAM,
     });
 }

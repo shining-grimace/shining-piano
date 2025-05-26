@@ -1,19 +1,15 @@
 (
     root: Combiner(
         sources: [
-            EventReceiver(
+            SquareWave(
                 node_id: Some(0),
-                source: SquareWave(
-                    amplitude: 0.125,
-                    duty_cycle: 0.125
-                )
+                amplitude: 0.125,
+                duty_cycle: 0.125
             ),
-            EventReceiver(
+            SquareWave(
                 node_id: Some(1),
-                source: SquareWave(
-                    amplitude: 0.125,
-                    duty_cycle: 0.5
-                )
+                amplitude: 0.125,
+                duty_cycle: 0.5
             )
         ]
     )
