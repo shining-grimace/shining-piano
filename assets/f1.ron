@@ -1,15 +1,19 @@
 (
     root: Combiner(
         sources: [
-            SquareWave(
+            Polyphony(
                 node_id: Some(0),
-                amplitude: 0.125,
-                duty_cycle: 0.125
+                source: SquareWave(
+                    amplitude: 0.125,
+                    duty_cycle: 0.125
+                )
             ),
-            SquareWave(
+            Polyphony(
                 node_id: Some(1),
-                amplitude: 0.125,
-                duty_cycle: 0.5
+                source: SquareWave(
+                    amplitude: 0.125,
+                    duty_cycle: 0.5
+                )
             )
         ]
     )

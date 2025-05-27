@@ -43,10 +43,14 @@ fn post_input_events(
     }
     for key in inputs.get_just_released() {
         if let Some((register, note)) = note_from_key_code(key, &settings) {
+            let node_id = match register {
+                KeyboardRegister::Lower => NODE_ID_LOWER,
+                KeyboardRegister::Upper => NODE_ID_UPPER
+            };
             note_events.write(KeyEvent {
                 register,
                 message: Message {
-                    target: EventTarget::Broadcast,
+                    target: EventTarget::SpecificNode(node_id),
                     data: Event::NoteOff { note, vel: 1.0 },
                 },
             });

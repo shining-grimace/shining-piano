@@ -319,7 +319,7 @@ dependencies = [
 [[package]]
 name = "bevy-midi-graph"
 version = "0.1.0"
-source = "git+https://github.com/grimace87/bevy-midi-graph.git?rev=a52fcdcdb61fb8a64b0a7cf709f3bcfc29805d46#a52fcdcdb61fb8a64b0a7cf709f3bcfc29805d46"
+source = "git+https://github.com/grimace87/bevy-midi-graph.git?rev=579a22a8ceb26e442946cf4daef1817ed39ac8b0#579a22a8ceb26e442946cf4daef1817ed39ac8b0"
 dependencies = [
  "bevy",
  "midi-graph",
@@ -2731,7 +2731,7 @@ dependencies = [
 [[package]]
 name = "midi-graph"
 version = "0.1.0"
-source = "git+https://github.com/grimace87/midi-graph.git?rev=7084419f195c9b7d24b9358c65396c51f454590d#7084419f195c9b7d24b9358c65396c51f454590d"
+source = "git+https://github.com/grimace87/midi-graph.git?rev=84a7df8e88d6ecbb4c9822e32aadca0db9d351f2#84a7df8e88d6ecbb4c9822e32aadca0db9d351f2"
 dependencies = [
  "byteorder",
  "cpal",
