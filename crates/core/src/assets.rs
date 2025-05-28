@@ -27,10 +27,10 @@ fn init_program_assets(server: Res<AssetServer>, mut program_data: ResMut<Progra
         "f1.ron", "f2.ron", "f3.ron", "f4.ron", "f5.ron", "f6.ron", "f7.ron", "f8.ron", "f9.ron",
         "f10.ron", "f11.ron", "f12.ron",
     ];
-    for (program_no, name) in asset_names.iter().enumerate() {
+    for (index, name) in asset_names.iter().enumerate() {
         program_data
             .programs
-            .push((LoadState::NotLoaded, program_no, server.load(*name)));
+            .push((LoadState::NotLoaded, index + 1, server.load(*name)));
     }
 }
 
