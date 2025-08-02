@@ -24,5 +24,5 @@ strip = "debuginfo"
 
 [workspace.dependencies]
 bevy = { version = "0.16.0", features = ["dynamic_linking"] }
-bevy-midi-graph = { git = "https://github.com/grimace87/bevy-midi-graph.git", rev = "e1f8dbcac07799ccaa4211879ba18de1adba84d8" }
+bevy-midi-graph = { git = "https://github.com/shining-grimace/bevy-midi-graph.git", rev = "e1f8dbcac07799ccaa4211879ba18de1adba84d8" }
 

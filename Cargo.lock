@@ -319,7 +319,7 @@ dependencies = [
 [[package]]
 name = "bevy-midi-graph"
 version = "0.1.0"
-source = "git+https://github.com/grimace87/bevy-midi-graph.git?rev=e1f8dbcac07799ccaa4211879ba18de1adba84d8#e1f8dbcac07799ccaa4211879ba18de1adba84d8"
+source = "git+https://github.com/shining-grimace/bevy-midi-graph.git?rev=e1f8dbcac07799ccaa4211879ba18de1adba84d8#e1f8dbcac07799ccaa4211879ba18de1adba84d8"
 dependencies = [
  "bevy",
  "midi-graph",
