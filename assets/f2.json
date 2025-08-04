@@ -1,0 +1,15 @@
+{
+  "type": "Combiner",
+  "sources": [
+    {
+      "type": "TriangleWave",
+      "node_id": 0,
+      "amplitude": 1.0
+    },
+    {
+      "type": "SawtoothWave",
+      "node_id": 1,
+      "amplitude": 0.125
+    }
+  ]
+}

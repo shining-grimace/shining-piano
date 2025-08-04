@@ -3,7 +3,7 @@ use crate::{
     utils::{make_note, note_is_black},
 };
 use bevy::prelude::*;
-use bevy_midi_graph::midi::{Event, Message};
+use bevy_midi_graph::midi::event::{Event, Message};
 
 pub struct GraphicsPlugin;
 

@@ -10,5 +10,5 @@ crate-type = ["cdylib"]
 shining-piano-core = { path = "../core" }
 bevy = { workspace = true }
 bevy-midi-graph = { workspace = true }
-wasm-bindgen = "0.2.100"
+wasm-bindgen = "0.2"
 

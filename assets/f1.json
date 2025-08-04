@@ -1,0 +1,23 @@
+{
+  "type": "Combiner",
+  "sources": [
+    {
+      "type": "Polyphony",
+      "node_id": 0,
+      "source": {
+        "type": "SquareWave",
+        "amplitude": 0.125,
+        "duty_cycle": 0.125
+      }
+    },
+    {
+      "type": "Polyphony",
+      "node_id": 1,
+      "source": {
+        "type": "SquareWave",
+        "amplitude": 0.125,
+        "duty_cycle": 0.5
+      }
+    }
+  ]
+}

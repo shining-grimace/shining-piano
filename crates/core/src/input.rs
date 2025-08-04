@@ -3,7 +3,7 @@ use crate::{
     utils::{make_note, on_lower},
 };
 use bevy::prelude::*;
-use bevy_midi_graph::midi::{Event, EventTarget, Message};
+use bevy_midi_graph::midi::event::{Event, EventTarget, Message};
 
 const NODE_ID_LOWER: u64 = 0;
 const NODE_ID_UPPER: u64 = 1;
@@ -27,7 +27,7 @@ fn post_input_events(
         if let Some((register, note)) = note_from_key_code(key, &settings) {
             let node_id = match register {
                 KeyboardRegister::Lower => NODE_ID_LOWER,
-                KeyboardRegister::Upper => NODE_ID_UPPER
+                KeyboardRegister::Upper => NODE_ID_UPPER,
             };
             note_events.write(KeyEvent {
                 register,
@@ -45,7 +45,7 @@ fn post_input_events(
         if let Some((register, note)) = note_from_key_code(key, &settings) {
             let node_id = match register {
                 KeyboardRegister::Lower => NODE_ID_LOWER,
-                KeyboardRegister::Upper => NODE_ID_UPPER
+                KeyboardRegister::Upper => NODE_ID_UPPER,
             };
             note_events.write(KeyEvent {
                 register,

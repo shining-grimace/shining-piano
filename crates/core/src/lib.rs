@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use bevy_midi_graph::{MidiGraphPlugin, midi::Message};
+use bevy_midi_graph::{MidiGraphPlugin, midi::event::Message};
 
 mod assets;
 mod graphics;

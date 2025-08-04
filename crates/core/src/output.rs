@@ -1,9 +1,11 @@
 use crate::{KeyEvent, StartProgramEvent};
 use bevy::prelude::*;
 use bevy_midi_graph::{
-    GraphAssetLoader, LoopFileSource, MidiFileSource, MidiGraphAudioContext, OneShotFileSource,
-    Sf2FileSource,
-    config::{Config, SoundSource},
+    GraphAssetLoader, MidiFileSource, MidiGraphAudioContext, Sf2FileSource, WaveFileSource,
+    midi::{
+        event::Balance,
+        node::{NodeConfigData, SquareWave},
+    },
 };
 
 const PROGRAM_NO: usize = 0;
@@ -23,21 +25,17 @@ fn configure_audio(
     server: Res<AssetServer>,
     midi_assets: Res<Assets<MidiFileSource>>,
     sf2_assets: Res<Assets<Sf2FileSource>>,
-    loop_assets: Res<Assets<LoopFileSource>>,
-    one_shot_assets: Res<Assets<OneShotFileSource>>,
+    wav_assets: Res<Assets<WaveFileSource>>,
 ) {
-    let config = Config {
-        root: SoundSource::stock_square_wave(),
-    };
-    let loader = GraphAssetLoader::new(
-        &server,
-        &midi_assets,
-        &sf2_assets,
-        &loop_assets,
-        &one_shot_assets,
-    );
+    let config = NodeConfigData(Box::new(SquareWave {
+        node_id: None,
+        balance: Balance::Both,
+        amplitude: 0.125,
+        duty_cycle: 0.25,
+    }));
+    let mut loader = GraphAssetLoader::new(&server, &midi_assets, &sf2_assets, &wav_assets);
     audio_context
-        .store_new_program(PROGRAM_NO, &config, &loader)
+        .store_new_program(PROGRAM_NO, &config, &mut loader)
         .unwrap();
     audio_context.change_program(PROGRAM_NO).unwrap();
 }

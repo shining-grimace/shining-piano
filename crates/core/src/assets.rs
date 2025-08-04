@@ -1,8 +1,8 @@
 use crate::StartProgramEvent;
 use bevy::{asset::LoadState, prelude::*};
 use bevy_midi_graph::{
-    GraphAssetLoader, LoopFileSource, MidiFileSource, MidiGraph, MidiGraphAudioContext,
-    OneShotFileSource, Sf2FileSource,
+    GraphAssetLoader, MidiFileSource, MidiGraph, MidiGraphAudioContext, Sf2FileSource,
+    WaveFileSource,
 };
 
 const DEFAULT_PROGRAM: usize = 1;
@@ -24,8 +24,8 @@ pub struct ProgramAssets {
 
 fn init_program_assets(server: Res<AssetServer>, mut program_data: ResMut<ProgramAssets>) {
     let asset_names = [
-        "f1.ron", "f2.ron", "f3.ron", "f4.ron", "f5.ron", "f6.ron", "f7.ron", "f8.ron", "f9.ron",
-        "f10.ron", "f11.ron", "f12.ron",
+        "f1.json", "f2.json", "f3.json", "f4.json", "f5.json", "f6.json", "f7.json", "f8.json",
+        "f9.json", "f10.json", "f11.json", "f12.json",
     ];
     for (index, name) in asset_names.iter().enumerate() {
         program_data
@@ -39,8 +39,7 @@ fn check_graph_assets_ready(
     graph_assets: Res<Assets<MidiGraph>>,
     midi_assets: Res<Assets<MidiFileSource>>,
     sf2_assets: Res<Assets<Sf2FileSource>>,
-    loop_assets: Res<Assets<LoopFileSource>>,
-    one_shot_assets: Res<Assets<OneShotFileSource>>,
+    wav_assets: Res<Assets<WaveFileSource>>,
     mut program_data: ResMut<ProgramAssets>,
     mut audio_context: ResMut<MidiGraphAudioContext>,
     mut events: EventWriter<StartProgramEvent>,
@@ -67,16 +66,11 @@ fn check_graph_assets_ready(
                 }
                 asset.0 = LoadState::Loaded;
 
-                let loader = GraphAssetLoader::new(
-                    &server,
-                    &midi_assets,
-                    &sf2_assets,
-                    &loop_assets,
-                    &one_shot_assets,
-                );
+                let mut loader =
+                    GraphAssetLoader::new(&server, &midi_assets, &sf2_assets, &wav_assets);
                 let graph = graph_assets.get(&asset.2).unwrap();
                 audio_context
-                    .store_new_program(asset.1, &graph.config, &loader)
+                    .store_new_program(asset.1, &graph.config, &mut loader)
                     .unwrap();
                 println!("DID STORE PROGRAM: {}", asset.1);
             }
